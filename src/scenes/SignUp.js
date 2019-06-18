@@ -7,15 +7,18 @@ import axios from 'axios'
 
 import LoadingDialog from '../components/LoadingDialog'
 import Dimens from '../res/Dimens'
-import TopBanner from '../components/TopBanner';
+import TopBanner from '../components/TopBanner'
 import SignupForm from '../components/SignupForm'
-import FooterButton from '../components/FooterButton';
+import FooterButton from '../components/FooterButton'
+import passwordValidator from 'password-validator'
 
 class SignUp extends React.Component {
 
     state = {
         visible: false
     }
+
+    passwordSchema = new passwordValidator()
 
     changeText = obj => {
         this.setState(obj)
@@ -76,6 +79,14 @@ class SignUp extends React.Component {
             email == undefined || email.trim() == '' ? errors.email = 'Email is required' : /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) ? '' : errors.email = 'Invalid email format'
             name == undefined || name.trim() == '' ? errors.name = 'Name is required' : ''
             password == undefined || password.trim() == '' ? errors.password = 'Please set a password' : ''
+            this.passwordSchema
+                .is().min(8)
+                .is().max(100)
+                .has().uppercase()
+                .has().lowercase()
+                .has().digits()
+                .is().not().oneOf(['Passw0rd', 'Password123'])
+            this.passwordSchema.validate(password) ? errors.password = 'Password must be atleasr 8 charachters long and should contain one of each uppercase, lowercase and digit' : ''
             !passwordMatch ? errors.password = 'Passwords do not match' : ''
             Object.keys(errors).length > 0 ? this.setState({ errors }, reject(errors)) : resolve()
         })

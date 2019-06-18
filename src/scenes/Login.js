@@ -6,15 +6,18 @@ import CustomStyle from '../res/CustomStyles'
 import TopBanner from '../components/TopBanner'
 import { Actions } from 'react-native-router-flux'
 import { SecureStore } from 'expo'
-import { ACCESS_TOKEN, BASE_API } from '../res/Constants'
+import { ACCESS_TOKEN, BASE_API } from '../res/Constants';
 import LoadingDialog from '../components/LoadingDialog'
 import axios from 'axios'
 import FooterButton from '../components/FooterButton'
+import passwordValidator from 'password-validator'
 
 class Login extends Component {
     state = {
         visible: false
     }
+
+    passwordSchema = new passwordValidator()
 
     otpSubmitAction = async accessToken => {
         try {
@@ -90,6 +93,8 @@ class Login extends Component {
             let errors = {}
             contactNo == undefined ? errors.contactNo = 'Phone Number is Required' : contactNo.trim().length < 10 ? errors.contactNo = 'Phone number should be 10 digits long' : ''
             password == undefined || password.trim() == '' ? errors.password = 'Please enter a password' : ''
+            this.passwordSchema.is().min(8).is().max(16)
+            this.passwordSchema.validate(password) ? errors.password = 'Password should be more than 8 and less than 16 chaachters long' : ''
             Object.keys(errors).length > 0 ? this.setState({ errors }, reject(errors)) : resolve()
         })
     }
@@ -129,10 +134,7 @@ class Login extends Component {
                 </ScrollView>
                 <LoadingDialog visible={this.state.visible} />
                 {/* <RoundButton handleClick={this.handleClick} /> */}
-                <FooterButton name='Login' icon='check' cta={async () => {
-                    await SecureStore.setItemAsync(ACCESS_TOKEN, 'abcd')
-                    Actions.replace('HomeDrawer')
-                }} />
+                <FooterButton name='Login' icon='check' cta={this.handleClick} />
             </View >
         );
     }

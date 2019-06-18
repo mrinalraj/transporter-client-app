@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, TextInput, ToastAndroid, Alert, Actions } from 'react-native'
+import { View, StyleSheet, Text, TextInput, ToastAndroid, Alert, } from 'react-native'
+import { Actions } from 'react-native-router-flux'
 import TopBanner from '../components/TopBanner'
 import Colors from '../res/Colors'
 import Dimens from '../res/Dimens'
@@ -90,15 +91,15 @@ class OtpScreen extends Component {
                 let { result } = payload
 
                 if (this.props.otpType === 'verify') {
-                    // Alert.alert(result.message)
-                    Actions.HomeDrawer()
-                    ToastAndroid.show('logged in 1', ToastAndroid.SHORT)
+                    Alert.alert(result.message)
+                    Actions.reset('HomeDrawer')
+                    // ToastAndroid.show('logged in 1', ToastAndroid.SHORT)
                 }
                 else {
                     try {
                         await SecureStore.setItemAsync(ACCESS_TOKEN, result.accessToken)
-                        ToastAndroid.show('logged in 2', ToastAndroid.SHORT)
-                        Actions.replace('HomeDrawer')
+                        // ToastAndroid.show('logged in 2', ToastAndroid.SHORT)
+                        Actions.reset('HomeDrawer')
                     }
                     catch (e) {
                         ToastAndroid.show(JSON.stringify(e), ToastAndroid.SHORT)
