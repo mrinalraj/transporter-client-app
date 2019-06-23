@@ -7,7 +7,8 @@ import Dimens from '../res/Dimens'
 
 class DatePicker extends Component {
     state = {
-        isVisible: false
+        isVisible: false,
+
     }
 
     onConfirm = data => {
@@ -21,14 +22,12 @@ class DatePicker extends Component {
 
         this.setState({
             datetime: datetime, isVisible: false
-        }, this.props.onConfirm(this.state.datetime))
+        }, this.props.onConfirm(this.state.datetime, moment(data).unix()))
     }
 
     Styles = StyleSheet.create({
         labelText: {
-            fontSize: 12,
-            color: Colors.White,
-            marginTop: Dimens.hp(2)
+            ...this.props.labelText
         },
         inputStyle: {
             ...this.props.inputStyle

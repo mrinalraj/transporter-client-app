@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import Colors from '../res/Colors';
 import Dimens from '../res/Dimens';
-import { Title, Paragraph, Subheading } from 'react-native-paper';
+import { Title, FAB, Subheading, } from 'react-native-paper';
+import { Actions } from 'react-native-router-flux';
 
 class RideDetails extends Component {
     state = {
@@ -24,6 +25,9 @@ class RideDetails extends Component {
                     <Text>08:00 AM</Text>
                     <Text>Full load</Text>
                 </ScrollView>
+                <FAB style={{ position: 'absolute', margin: Dimens.padding / 2, bottom: 0, right: 0 }}
+                    icon='map'
+                    onPress={() => Actions.TruckLiveLocation()} />
             </View>
         )
     }

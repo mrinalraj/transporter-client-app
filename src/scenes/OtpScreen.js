@@ -75,7 +75,7 @@ class OtpScreen extends Component {
                 accessToken
             }
         } else {
-            endpoint = '/verifyForgetPasswordOtp'
+            endpoint = '/verifyotpOutSide'
             data = {
                 otp: this.state.otp.join(''),
                 contactNo: this.props.contactNo
@@ -89,6 +89,7 @@ class OtpScreen extends Component {
             let { success, payload } = data
             if (success) {
                 let { result } = payload
+                this.setState({ visible: false })
 
                 if (this.props.otpType === 'verify') {
                     Alert.alert(result.message)
@@ -105,7 +106,6 @@ class OtpScreen extends Component {
                         ToastAndroid.show(JSON.stringify(e), ToastAndroid.SHORT)
                     }
                 }
-                this.setState({ visible: false })
             }
             else {
                 let { error } = payload,

@@ -1,42 +1,149 @@
 import React, { Component } from 'react'
-import { View, Text, Image, StyleSheet, ScrollView, Alert, Keyboard, TextInput, } from 'react-native'
+import { View, Text, Image, StyleSheet, ScrollView, Button, Keyboard, TextInput, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
 import Dimens from '../../res/Dimens'
 import { SecureStore } from 'expo'
-import { ACCESS_TOKEN } from '../../res/Constants'
+import { ACCESS_TOKEN, BASE_API, INIT_DATA } from '../../res/Constants'
 import { Actions, } from 'react-native-router-flux'
 import Colors from '../../res/Colors'
-import { IconButton, Modal } from 'react-native-paper'
-import FooterButton from '../../components/FooterButton';
-import FilterModal from '../../components/FilterModal';
-import AvailableRidesCard from '../../components/AvailableRidesCard';
+import { IconButton, Modal, ActivityIndicator, Card, } from 'react-native-paper'
+import FooterButton from '../../components/FooterButton'
+import FilterModal from '../../components/FilterModal'
+import AvailableRidesCard from '../../components/AvailableRidesCard'
+import Axios from 'axios'
+import LoadingDialog from '../../components/LoadingDialog';
+
+
+class VolumeAndWeightInput extends Component {
+
+    state = {
+        setState: this.props.setState,
+    }
+
+    render() {
+        return (
+            <Modal
+                dismissable={false}
+                visible={this.props.confirmOptionShown}>
+                <KeyboardAvoidingView behavior='position'>
+                    <Card style={{ margin: Dimens.padding }}>
+                        <Card.Title title='Enter values to request ride' />
+                        <Card.Content>
+                            <Text style={Styles.labelText}>Volume</Text>
+                            <TextInput placeholder={`Volume in metre³`} style={Styles.inputStyle} onChangeText={t => this.setState({ volume: t })}></TextInput>
+                            <Text style={Styles.labelText}>Weight</Text>
+                            <TextInput placeholder={`Weight in kilogram`} style={Styles.inputStyle} onChangeText={t => this.setState({ weight: t })}></TextInput>
+                        </Card.Content>
+
+                        <View style={{ paddingRight: Dimens.padding / 4, paddingLeft: Dimens.padding / 4 }}>
+                            {
+                                !!this.state.error ? <Text style={{
+                                    fontSize: 12,
+                                    color: Colors.warningRed,
+                                    marginTop: Dimens.hp(4),
+                                }}>All fields are mandatory</Text> : null
+                            }
+
+                            <Text style={{ marginTop: Dimens.hp(2) }}>Do you want to reqest the ride?</Text>
+                        </View>
+
+
+                        <Card.Actions style={{ marginTop: 10 }}>
+                            <TouchableOpacity onPress={() => {
+                                if (!!this.state.volume && !!this.state.weight) {
+                                    this.setState({ error: false })
+                                    this.props.cancelModal()
+                                    this.props._createRideRequest(this.state.volume, this.state.weight)
+                                }
+                                else this.setState({ error: true })
+                            }}
+                                style={{ padding: Dimens.padding / 4, marginRight: 15 }}>
+                                <Text style={{ color: Colors.primaryColor }}>Yes</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.props.cancelModal} style={{ padding: Dimens.padding / 6, }}>
+                                <Text style={{ color: Colors.primaryColor }}>No</Text>
+                            </TouchableOpacity>
+                        </Card.Actions>
+                    </Card>
+                </KeyboardAvoidingView>
+            </Modal >
+        )
+    }
+}
 
 
 class Home extends Component {
+
     state = {
         searchShown: false,
-        filterShown: false
+        filterShown: false,
+        list: [],
+        loading: false,
+        loadingModal: false,
+        confirmOptionShown: false
     }
 
+    _getData = async (page = 1) => {
+        this.setState({ loading: true })
+        const accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
+        if (!!accessToken) {
+            Axios.post(`${BASE_API}/listRides`, {
+                limit: 20,
+                page,
+            }, { headers: { accessToken } })
+                .then(({ data }) => {
+                    this.setState({ loading: false })
 
+                    if (!data.success)
+                        return alert(data.payload.error.message)
+
+                    this.setState({ list: data.payload.result.data })
+                    // console.log(data.payload.result.data)
+
+                })
+                .catch(error => alert(error))
+        }
+    }
+
+    _createRideRequest = async (volume, weight) => {
+
+        if (!!volume && !!weight) {
+            this.setState({ loadingModal: true })
+            const accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
+            if (!!accessToken) {
+                Axios.post(`${BASE_API}/createRideRequest`, {
+                    rideId: this.state.currentCard._id,
+                    transporterId: this.state.currentCard.transporterData._id,
+                    volume: Number.parseInt(volume),
+                    weight: Number.parseInt(weight)
+                },
+                    { headers: { accessToken } })
+                    .then(({ data }) => {
+                        this.setState({ loadingModal: false })
+                    
+                        if (!data.success)
+                            return alert(data.payload.error.message)
+
+                        Actions.MyRides()
+                    })
+                    .catch(error => alert(JSON.stringify(error)))
+            }
+
+        }
+
+    }
 
     async componentDidMount() {
+        this._getData()
         this.keyboardHideListener = Keyboard.addListener('keyboardDidHide', () => {
             this.setState({
                 searchBar: false
             })
         })
-
-        let accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
-        if (accessToken == null) {
-            Actions.replace('Login')
-        }
-
     }
 
     componentWillUnmount() {
         this.keyboardHideListener.remove()
     }
-
 
     searchBar = () => {
         return (
@@ -86,37 +193,13 @@ class Home extends Component {
         )
     }
 
-    data = {
-        from: {
-            place: 'Roorkee',
-            subplace: 'Adarsh Nagar',
-            date: '13th May, 2019',
-            time: '08:00 AM'
-        },
-        to: {
-            place: 'Dehradun',
-            subplace: 'Dehradun',
-            date: '16th May, 2019',
-            time: '09:00 PM'
-        },
-        ride: 'Full Load',
-        truck: 'Vegetable'
-    }
 
+    cardPressed = e => {
 
-    cardPressed = () => {
-        Alert.alert('', 'Are you sure you want to request for this ride ?', [
-            {
-                text: 'Yes',
-                onPress: () => Actions.MyRequests()
-            },
-            {
-                text: "No",
-                onPress: () => { }
-            }
-        ],
-            { cancelable: true }
-        )
+        this.setState({
+            currentCard: e,
+            confirmOptionShown: true
+        })
     }
 
     render() {
@@ -132,11 +215,18 @@ class Home extends Component {
                 </View>
 
                 <ScrollView style={Styles.rootView}>
-                    {/* {this.list.map((e, i) => <TruckListing key={i} {...e} onPress={() => this.cardPressed(e)} />)} */}
-                    <AvailableRidesCard {...this.data} onPress={() => this.cardPressed()} />
+                    {
+                        this.state.list.map((e, i) => <AvailableRidesCard {...e} key={i} onPress={() => this.cardPressed(e)} />)
+                    }
+                    {
+                        this.state.loading ? <ActivityIndicator animating={true} size="small" color={Colors.accentColor} ></ActivityIndicator> : null
+                    }
+
                 </ScrollView>
                 <FilterModal visible={this.state.filterShown} hideFilter={() => { this.setState({ filterShown: false }) }} onComplete={() => { }} />
                 <FooterButton icon='add' name='Create Ride Request' cta={() => Actions.CreateRideRequest()} />
+                <VolumeAndWeightInput setState={this.setState} confirmOptionShown={this.state.confirmOptionShown} _createRideRequest={this._createRideRequest} cancelModal={() => this.setState({ confirmOptionShown: false })} />
+                <LoadingDialog visible={this.state.loadingModal} />
             </View>
         );
     }
@@ -147,6 +237,21 @@ const Styles = StyleSheet.create({
         padding: Dimens.padding / 2,
         paddingTop: 0,
         flexGrow: 1
+    },
+    labelText: {
+        fontSize: 12,
+        color: Colors.muteTextColor,
+        marginTop: Dimens.hp(2)
+    },
+    pickerStyle: {
+        marginStart: -8, marginTop: -4, marginBottom: -4, marginEnd: -8
+    },
+    inputStyle: {
+        paddingBottom: 3,
+        fontSize: 15,
+        borderBottomColor: Colors.blackColor,
+        borderBottomWidth: 1.5,
+        letterSpacing: 0.5,
     }
 })
 

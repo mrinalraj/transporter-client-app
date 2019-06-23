@@ -3,6 +3,7 @@ import { View, Text, Image } from 'react-native'
 import { Card, Title, Subheading, Divider } from 'react-native-paper'
 import Dimens from '../res/Dimens'
 import Colors from '../res/Colors'
+import moment from 'moment'
 
 class MyRequestsList extends Component {
     state = {
@@ -11,19 +12,19 @@ class MyRequestsList extends Component {
 
     render() {
         return (
-            <Card style={{ marginBottom: Dimens.padding / 2, padding: 0 }} onPress={this.props.onPress}>
-                <Card.Title title='Transporter Name' subtitle='UK 08J 4562' />
-                <Divider />
-                <Card.Content style={{ paddingBottom: Dimens.hp('3') }}>
+            <Card style={{ marginBottom: Dimens.padding / 2 }} onPress={this.props.onPress}>
+                {/* <Card.Title title='Transporter Name' subtitle='UK 08J 4562' />
+                <Divider /> */}
+                <Card.Content>
                     <View style={{ flexDirection: "row" }}>
                         <View style={{ flexDirection: 'column', flex: 0.4 }}>
                             <View style={{ marginTop: 10, marginBottom: 60 }}>
-                                <Title>{this.state.from.place}</Title>
-                                <Subheading>{this.state.from.subplace}</Subheading>
+                                <Title>{this.props.rideData.startAddress.address}</Title>
+                                {/* <Subheading>{this.state.from.subplace}</Subheading> */}
                             </View>
                             <View>
-                                <Title>{this.state.to.place}</Title>
-                                <Subheading>{this.state.to.subplace}</Subheading>
+                                <Title>{this.props.rideData.endAddress.address}</Title>
+                                {/* <Subheading>{this.state.to.subplace}</Subheading> */}
                             </View>
                         </View>
 
@@ -41,20 +42,20 @@ class MyRequestsList extends Component {
 
                         <View style={{ flexDirection: 'column', borderLeftColor: Colors.muteTextColor, borderLeftWidth: 1, flex: 0.6 }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20, }}>
-                                <Text>{`${this.state.from.date} / ${this.state.from.time}`}</Text>
+                                <Text>{`${moment(this.props.rideData.startTime).format('MMMM Do YYYY')} \n${moment(this.props.rideData.startTime).format('hh:mm:ss a')}`}</Text>
                             </View>
 
                             <Divider />
 
                             <View style={{ padding: 20 }}>
-                                <Text>{`Truck Type : ${this.state.truck}`}</Text>
-                                <Text>{`Ride Type : ${this.state.ride}`}</Text>
+                                <Text>{`Ride Type : ${this.props.rideData.rideType}`}</Text>
+
                             </View>
 
                             <Divider />
 
                             <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20, }}>
-                                <Text>{`${this.state.to.date} / ${this.state.to.time}`}</Text>
+                                <Text>{`${moment(this.props.rideData.endTime).format('MMMM Do YYYY')} \n${moment(this.props.rideData.endTime).format('hh:mm:ss a')}`}</Text>
                             </View>
                         </View>
                     </View>

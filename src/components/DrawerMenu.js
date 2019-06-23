@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { Actions } from 'react-native-router-flux'
 import Dimens from '../res/Dimens'
 import { SecureStore } from 'expo'
-import { ACCESS_TOKEN } from '../res/Constants'
+import { ACCESS_TOKEN, USER_PROFILE } from '../res/Constants'
 import Colors from '../res/Colors';
 
 class DrawerMenu extends Component {
@@ -29,6 +29,16 @@ class DrawerMenu extends Component {
 
     }
 
+    
+    // _getProfileFromStorage = async _ => {
+    //     SecureStore.getItemAsync(USER_PROFILE)
+    //         .then(result => this.setState({ ...JSON.parse(result) }))
+    // }
+
+    // componentDidMount() {
+    //     this._getProfileFromStorage()
+    // }
+
     render() {
         return (
             <View style={{ flex: 2, }}>
@@ -41,7 +51,7 @@ class DrawerMenu extends Component {
                 </View>
 
                 <List.Section style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
-                    <List.Accordion title="Mrinal Raj" expanded={this.state.expanded} onPress={() => this.setState(previousState => ({ expanded: !previousState.expanded }))}>
+                    <List.Accordion title={this.props.profileName} expanded={this.state.expanded} onPress={() => this.setState(previousState => ({ expanded: !previousState.expanded }))}>
 
                         <List.Item
                             style={{ paddingTop: 5, paddingBottom: 5 }}
@@ -63,6 +73,7 @@ class DrawerMenu extends Component {
                                         onPress: async () => {
                                             try {
                                                 await SecureStore.deleteItemAsync(ACCESS_TOKEN)
+                                                await SecureStore.deleteItemAsync(USER_PROFILE)
                                                 Actions.reset('Login')
                                             }
                                             catch{

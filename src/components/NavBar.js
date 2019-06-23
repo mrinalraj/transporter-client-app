@@ -15,7 +15,7 @@ class NavBar extends React.Component {
         return (
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <IconButton color={Colors.White} size={24} icon='arrow-back' onPress={() => Actions.pop()} />
-                <Title style={{ color: Colors.White, textAlign: 'center', justifyContent: 'center', flex: 0.8 }}>{this.props.title}</Title>
+                <Title style={{ color: Colors.White, textAlign: 'center', justifyContent: 'center', flex: 0.9 }}>{this.props.title}</Title>
                 <View style={{ flex: 0.1 }}>
                     {
                         this.props.searchEnabled ? this.searchButton() : null
@@ -41,6 +41,7 @@ class NavBar extends React.Component {
                 <IconButton icon='arrow-back'
                     color={Colors.muteTextColor}
                     size={25}
+                    style={{justifyContent:'flex-end'}}
                     onPress={() => this.setState({ searchShown: false })}
                 />
 
@@ -61,7 +62,7 @@ class NavBar extends React.Component {
         return (
             <View>
                 <View style={{ height: Dimens.statusBarHeight, backgroundColor: Colors.primaryColor }} />
-                <View style={{ backgroundColor: Colors.primaryColor, padding: Dimens.padding / 3, }}>
+                <View style={{ backgroundColor: Colors.primaryColor, padding: Dimens.padding / 4, paddingRight: Dimens.padding / 2, paddingLeft: Dimens.padding / 3 }}>
                     {
                         this.state.searchShown ? this.searchBar() : this.topBar()
                     }

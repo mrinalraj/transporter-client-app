@@ -4,45 +4,57 @@ import Colors from '../../res/Colors'
 import NavBar from '../../components/NavBar'
 import Dimens from '../../res/Dimens'
 import MyRequestsList from '../../components/MyRequestsList'
+import LoadingDialog from '../../components/LoadingDialog';
+import { SecureStore } from 'expo';
+import { ACCESS_TOKEN, BASE_API } from '../../res/Constants';
+import Axios from 'axios';
 
 class MyRequests extends Component {
     state = {
-
+        loading: false,
+        list: []
     }
 
-    data = {
-        from: {
-            place: 'Roorkee',
-            subplace: 'Adarsh Nagar',
-            date: '13th May, 2019',
-            time: '08:00 AM'
-        },
-        to: {
-            place: 'Dehradun',
-            subplace: 'Dehradun',
-            date: '16th May, 2019',
-            time: '09:00 PM'
-        },
-        ride: 'Full Load',
-        truck: 'Vegetable'
+    _getData = async _ => {
+        this.setState({ loading: true })
+        const accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN)
+        if (!!accessToken) {
+            Axios.post(`${BASE_API}/listMyRequests`, '', { headers: { accessToken } })
+                .then(({ data }) => {
+                    this.setState({ loading: false })
+                    if (!data.success)
+                        return alert(dara.payload.error.message)
+                    const list = data.payload.result.data
+                    this.setState({ list })
+                })
+                .catch(err => alert(err))
+        }
+    }
+
+    componentDidMount() {
+        this._getData()
     }
 
     render() {
         return (
             <View style={{ backgroundColor: Colors.primaryColor, flex: 1 }}>
                 <NavBar title='My Request' searchEnabled />
-                <View style={{ margin: Dimens.padding / 2, marginTop: 0, marginBottom: 0, borderRadius: 5, backgroundColor: Colors.White, paddingTop: Dimens.padding / 12, paddingBottom: Dimens.padding / 12 }}>
+                {/* <View style={{ margin: Dimens.padding / 2, marginTop: 0, marginBottom: 0, borderRadius: 5, backgroundColor: Colors.White, paddingTop: Dimens.padding / 12, paddingBottom: Dimens.padding / 12 }}>
                     <Picker prompt='Select Catagory' style={{ marginTop: -4, marginBottom: -4, marginEnd: -8, }} selectedValue={this.state.catagory} onValueChange={(val, i) => this.setState({ catagory: val })}>
                         <Picker.Item label='Pending' value='Pending' />
                         <Picker.Item label='Accepted' value='Accepted' />
                         <Picker.Item label='Ongoing' value='Ongoing' />
                         <Picker.Item label='Complete' value='Completed' />
                     </Picker>
-                </View>
+                </View> */}
                 <ScrollView style={Styles.rootView}>
-                    {/* {this.list.map((e, i) => <TruckListing key={i} {...e} onPress={() => this.cardPressed(e)} />)} */}
-                    <MyRequestsList {...this.data} />
+                    {
+                        this.state.list.sort((a, b) => a - b)
+                            // .filter()
+                            .map((d, i) => <MyRequestsList {...d} key={i} />)
+                    }
                 </ScrollView>
+                <LoadingDialog visible={this.state.loading} />
             </View>
         );
     }
@@ -52,6 +64,8 @@ class MyRequests extends Component {
 const Styles = StyleSheet.create({
     rootView: {
         padding: Dimens.padding / 2,
+        paddingTop: 0,
+        marginTop: Dimens.padding / 2,
         flexGrow: 1
     }
 })

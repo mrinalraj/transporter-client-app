@@ -17,38 +17,15 @@ import CreateRideRequest from './scenes/CreateRideRequest'
 import MyRequests from './scenes/drawerItems/MyRequests'
 import MyRides from './scenes/drawerItems/MyRides'
 import RideDetails from './components/RideDetails';
+import CheckLoginState from './scenes/CheckLoginState';
+import MapPickerCustom from './scenes/MapPickerCustom';
+import TruckLiveLocation from './scenes/TruckLiveLocation';
 
 let backPressedOnce = false
 
 class Routes extends React.Component {
-    state = {
-        isLogged: true
-    }
 
-    componentDidMount() {
-        // this.loginState()
-        this.setState({ loggedInState: true })
-    }
-
-    componentWillMount() {
-        BackHandler.addEventListener('hardwareBackPress', this.onBackPress)
-    }
-
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress)
-    }
-
-    loginState = async () => {
-        try {
-            const loggedInState = await SecureStore.getItemAsync(ACCESS_TOKEN)
-            this.setState({
-                loggedInState: loggedInState !== null
-            })
-        }
-        catch (error) {
-            ToastAndroid.show(this.state.loggedInState)
-        }
-    }
+    state = {}
 
     onBackPress = () => {
         const currentScene = Actions.currentScene.substr(1)
@@ -77,10 +54,10 @@ class Routes extends React.Component {
         return (
             <Router backAndroidHandler={this.onBackPress}>
                 <Scene key="root">
+                    <Scene key="CheckLoginState" component={CheckLoginState} initial hideNavBar />
                     <Drawer key='HomeDrawer'
                         hideNavBar
-                        initial={this.props.isLogged}
-                        contentComponent={DrawerMenu}
+                        contentComponent={() => <DrawerMenu profileName={this.props.name} />}
                         drawerWidth={Dimens.windowWidth * 0.6}
                         hideDrawerButton={true}
                         drawerPosition="left">
@@ -91,13 +68,17 @@ class Routes extends React.Component {
                         <Scene key='MyRides' component={MyRides} hideNavBar />
 
                     </Drawer>
-                    <Scene key="Login" component={Login} initial={!this.props.isLogged} hideNavBar />
+                    <Scene key="Login"
+                        component={Login}
+                        hideNavBar />
                     <Scene key="SignUp" component={SignUp} hideNavBar />
                     <Scene key="OtpScreen" component={OtpScreen} hideNavBar />
                     <Scene key="ForgotPassword" component={ForgotPassword} hideNavBar />
                     <Scene key="ChangePassword" component={ChangePassword} hideNavBar />
                     <Scene key="CreateRideRequest" component={CreateRideRequest} hideNavBar />
                     <Scene key="RideDetails" component={RideDetails} hideNavBar />
+                    <Scene key="MapPickerCustom" component={MapPickerCustom} hideNavBar />
+                    <Scene key="TruckLiveLocation" component={TruckLiveLocation} hideNavBar />
                 </Scene>
             </Router>
         )
