@@ -9,3 +9,5 @@ npm-debug.*
 *.key
 *.mobileprovision
 .DS_Store
+*.log
+.watchmanconfig
