@@ -1,5 +1,5 @@
 import { List, } from 'react-native-paper'
-import { View, Text, ToastAndroid, Alert, Image } from 'react-native'
+import { View, Text, Alert, } from 'react-native'
 import React, { Component } from 'react'
 import { Actions } from 'react-native-router-flux'
 import Dimens from '../res/Dimens'

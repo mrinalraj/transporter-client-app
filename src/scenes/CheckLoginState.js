@@ -2,7 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 import LoadingDialog from '../components/LoadingDialog';
 import { ACCESS_TOKEN, BASE_API, USER_PROFILE, INIT_DATA } from '../res/Constants';
-import { SecureStore } from 'expo';
+import { SecureStore, Permissions } from 'expo';
 import Axios from 'axios';
 import { Actions } from 'react-native-router-flux';
 import Colors from '../res/Colors';
@@ -20,6 +20,7 @@ class CheckLoginState extends React.Component {
                     if (!data.success)
                         return alert(data.payload.error.message)
                     await SecureStore.setItemAsync(USER_PROFILE, JSON.stringify(data.payload.result))
+                    this._getPermissionsAsync()
                     Actions.reset('HomeDrawer', {})
                 })
                 .catch(error => {
@@ -29,6 +30,8 @@ class CheckLoginState extends React.Component {
         else
             Actions.reset('Login')
     }
+
+    _getPermissionsAsync = async () => await Permissions.askAsync(Permissions.LOCATION)
 
     render() {
         return (

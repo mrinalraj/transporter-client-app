@@ -23,6 +23,9 @@ class DatePicker extends Component {
         this.setState({
             datetime: datetime, isVisible: false
         }, this.props.onConfirm(this.state.datetime, moment(data).unix()))
+
+        console.log(moment(data).unix())
+        console.log(data)
     }
 
     Styles = StyleSheet.create({

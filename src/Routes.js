@@ -1,8 +1,6 @@
 import React from 'react'
 import { Router, Scene, Drawer, Actions, } from 'react-native-router-flux'
-import { ToastAndroid, BackHandler, BackAndroid } from 'react-native'
-import { SecureStore, } from 'expo'
-import { ACCESS_TOKEN } from './res/Constants'
+import { BackAndroid } from 'react-native'
 
 import Login from './scenes/Login'
 import SignUp from './scenes/SignUp'
@@ -42,7 +40,6 @@ class Routes extends React.Component {
                 }
                 else {
                     backButtonPressedOnceToExit = true;
-                    ToastAndroid.show("Press Back Button again to exit", ToastAndroid.SHORT);
                     setTimeout(() => { backButtonPressedOnceToExit = false }, 2000);
                     return true;
                 }
@@ -66,15 +63,14 @@ class Routes extends React.Component {
                         <Scene key='Profile' component={Profile} hideNavBar />
                         <Scene key='MyRequests' component={MyRequests} hideNavBar />
                         <Scene key='MyRides' component={MyRides} hideNavBar />
-
+                        <Scene key="ChangePassword" component={ChangePassword} hideNavBar />
                     </Drawer>
-                    <Scene key="Login"
-                        component={Login}
-                        hideNavBar />
+
+                    <Scene key="Login" component={Login} hideNavBar />
                     <Scene key="SignUp" component={SignUp} hideNavBar />
                     <Scene key="OtpScreen" component={OtpScreen} hideNavBar />
                     <Scene key="ForgotPassword" component={ForgotPassword} hideNavBar />
-                    <Scene key="ChangePassword" component={ChangePassword} hideNavBar />
+                    
                     <Scene key="CreateRideRequest" component={CreateRideRequest} hideNavBar />
                     <Scene key="RideDetails" component={RideDetails} hideNavBar />
                     <Scene key="MapPickerCustom" component={MapPickerCustom} hideNavBar />

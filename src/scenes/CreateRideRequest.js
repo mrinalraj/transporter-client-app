@@ -75,7 +75,7 @@ class CreateRideRequest extends Component {
                         this.setState({ loading: false })
                         if (!data.success)
                             return alert(data.payload.error.message)
-                        
+
                         Actions.MyRequests()
                     })
                     .catch(err => alert(err))
@@ -89,8 +89,8 @@ class CreateRideRequest extends Component {
         return (
             <View style={{ backgroundColor: Colors.primaryColor, flex: 1, }}>
                 <NavBar title='Create Ride Request' />
-                <ScrollView contentContainerStyle={{ flexGrow: 2, padding: Dimens.padding / 2, paddingTop: Dimens.padding / 4 }}>
-                    <KeyboardAvoidingView behavior='position'>
+                <KeyboardAvoidingView behavior='position'>
+                    <ScrollView contentContainerStyle={{ flexGrow: 2, padding: Dimens.padding / 2, paddingTop: Dimens.padding / 4 }}>
                         <Subheading style={{ color: Colors.White }}>Create a ride with the following details</Subheading>
                         <View style={{ marginTop: Dimens.hp(3), }}>
 
@@ -130,8 +130,8 @@ class CreateRideRequest extends Component {
                             <DatePicker label="Pickup Date" inputStyle={Styles.inputStyle} labelText={Styles.labelText} mode='datetime' onConfirm={(datetime, timestamp) => this.setState({ pickup: datetime, startTime: timestamp })} />
                             <DatePicker label="Drop Date" inputStyle={Styles.inputStyle} labelText={Styles.labelText} mode='datetime' onConfirm={(datetime, timestamp) => this.setState({ drop: datetime, endTime: timestamp })} />
                         </View>
-                    </KeyboardAvoidingView>
-                </ScrollView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
                 <FooterButton name="Create Request" icon="add" cta={this._createRideRequest} />
                 <LoadingDialog visible={this.state.loading} />
             </View>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, Picker, TextInput, StyleSheet, ToastAndroid, Alert, } from 'react-native'
+import { View, Text, Picker, TextInput, StyleSheet, Alert, } from 'react-native'
 import Colors from '../res/Colors'
 import CountryCode from '../res/CountryCode'
 import CustomStyles from '../res/CustomStyles'
@@ -42,7 +42,7 @@ class SignupForm extends React.Component {
 
             <View>
                 <Text style={CustomStyles.headText}>New here? Lets get you onboard.</Text>
-                <Picker
+                {/* <Picker
                     style={Styles.picker}
                     selectedValue={this.state.countryCode}
                     onValueChange={(itemValue, itemIndex) => {
@@ -50,7 +50,7 @@ class SignupForm extends React.Component {
                         this.state.changeText({ countryCode: itemValue })
                     }}>
                     {this.renderList()}
-                </Picker>
+                </Picker> */}
                 <TextInput
                     onChangeText={text => this.state.changeText({ contactNo: text })}
                     placeholder="Phone Number"
@@ -97,7 +97,7 @@ class SignupForm extends React.Component {
                     style={CustomStyles.inputStyle}
                     ref={input => this.passwordConfirmInput = input}
                     returnKeyType="done"
-                    // onSubmitEditing={() => { this.handleSignup }}
+                    onSubmitEditing={() => this.props.handleSignup()}
                     blurOnSubmit={false} />
 
 

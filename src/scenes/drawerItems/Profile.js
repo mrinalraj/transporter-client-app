@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, TouchableOpacity, ToastAndroid, KeyboardAvoidingView, Image } from 'react-native'
+import { Text, View, TouchableOpacity, KeyboardAvoidingView, Image } from 'react-native'
 import Colors from '../../res/Colors'
 import Dimens from '../../res/Dimens'
 import { Avatar, Title, Subheading, IconButton, ActivityIndicator, List } from 'react-native-paper'
@@ -26,10 +26,12 @@ class Profile extends Component {
             .then(result => {
                 this.setState({ ...JSON.parse(result) }, () =>
                     this.setState({ tempImageUrl: this.state.imageUrl }, () => {
-                        this.setState({ imageUploading: true })
-                        Image.prefetch(this.state.tempImageUrl)
-                            .then(_ => this.setState({ imageUploading: false }))
-                            .catch(err => console.log(err))
+                        if (!!this.state.tempImageUrl && this.state.tempImageUrl !== '') {
+                            this.setState({ imageUploading: true })
+                            Image.prefetch(this.state.tempImageUrl)
+                                .then(_ => this.setState({ imageUploading: false }))
+                                .catch(err => console.log(err))
+                        }
                     }
                     )
                 )

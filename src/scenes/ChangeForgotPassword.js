@@ -12,7 +12,7 @@ import { Actions } from 'react-native-router-flux';
 import Colors from '../res/Colors';
 import passwordValidator from 'password-validator'
 
-class ChangePassword extends Component {
+class ChangeForgotPassword extends Component {
 
     state = {
         type: this.props.changeType,
@@ -21,7 +21,7 @@ class ChangePassword extends Component {
 
     passwordSchema = new passwordValidator()
 
-
+    
     _validate = () => {
         return new Promise((resolve, reject) => {
             const { newPassword, repeatNewPassword, } = this.state
@@ -31,8 +31,8 @@ class ChangePassword extends Component {
                 .is().min(7)
                 .is().max(100)
                 .is().not().oneOf(['Passw0rd', 'Password123'])
-            this.passwordSchema.validate(newPassword && newPassword.toString().trim()) ? '' : errors.password = 'Password should be atlest 8 and less than 16 chaachters long'
-            newPassword && newPassword.toString().trim() !== repeatNewPassword.toString().trim() ? errors.password = 'Passwords do not match' : ''
+            this.passwordSchema.validate(newPassword.toString().trim()) ? '' : errors.password = 'Password should be atlest 8 and less than 16 chaachters long'
+            newPassword.toString().trim() !== repeatNewPassword.toString().trim() ? errors.password = 'Passwords do not match' : ''
             Object.keys(errors).length > 0 ? this.setState({ errors }, reject(errors)) : resolve()
         })
     }
@@ -62,20 +62,13 @@ class ChangePassword extends Component {
 
         return (
             <View style={{ flex: 1 }}>
+                <TopBanner />
                 <KeyboardAvoidingView behavior="position">
-                    <TopBanner />
                     <ScrollView scrollEnabled={true} contentContainerStyle={{
                         padding: Dimens.padding / 2,
                         flexGrow: 2,
                     }} showsVerticalScrollIndicator={false}>
                         <Text style={CustomStyle.headText}>{`Enter the new password`}</Text>
-                        <TextInput
-                            style={CustomStyle.inputStyle}
-                            placeholder="Current Password"
-                            returnKeyType="next"
-                            onChangeText={t => this.setState({ oldPassword: t })}
-                            secureTextEntry={true}
-                        />
                         <TextInput
                             style={CustomStyle.inputStyle}
                             placeholder="New Password"
@@ -95,7 +88,7 @@ class ChangePassword extends Component {
                         }</Text>
                     </ScrollView>
                 </KeyboardAvoidingView>
-                <FooterButton name="Change Password" icon="check" cta={this._changePassword} />
+                <FooterButton name="Change Password" icon="check" cta={this._changePassword} disabled={this.state.loading}/>
                 <LoadingDialog visible={!!this.state.loading} />
             </View >
         );
@@ -119,4 +112,4 @@ const Styles = StyleSheet.create({
 })
 
 
-export default ChangePassword
+export default ChangeForgotPassword

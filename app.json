@@ -14,7 +14,9 @@
 			"backgroundColor": "#ffffff"
 		},
 		"updates": {
-			"fallbackToCacheTimeout": 0
+			"fallbackToCacheTimeout": 30000,
+			"enabled" : true,
+			"checkAutomatically" : "ON_LOAD"
 		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
@@ -23,7 +25,14 @@
 		},
 		"android": {
 			"package": "com.transporter.client.app",
-			"permissions": [],
+			"permissions": [
+				"CAMERA",
+				"READ_EXTERNAL_STORAGE",
+				"WRITE_EXTERNAL_STORAGE",
+				"LOCATION",
+				"ACCESS_COARSE_LOCATION",
+				"ACCESS_FINE_LOCATION"
+			],
 			"config": {
 				"googleMaps": {
 					"apiKey": "AIzaSyDu9JLR_CCvfdyuaYnkkkfFqJD8e1_Ro28"

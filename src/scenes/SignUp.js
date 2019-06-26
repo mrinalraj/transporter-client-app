@@ -86,7 +86,7 @@ class SignUp extends React.Component {
                 .has().lowercase()
                 .has().digits()
                 .is().not().oneOf(['Passw0rd', 'Password123'])
-            this.passwordSchema.validate(password) ? errors.password = 'Password must be atleasr 8 charachters long and should contain one of each uppercase, lowercase and digit' : ''
+            this.passwordSchema.validate(password) ? '' : errors.password = 'Password must be atleasr 8 charachters long and should contain one of each uppercase, lowercase and digit'
             !passwordMatch ? errors.password = 'Passwords do not match' : ''
             Object.keys(errors).length > 0 ? this.setState({ errors }, reject(errors)) : resolve()
         })
@@ -100,15 +100,15 @@ class SignUp extends React.Component {
     render() {
         return (
             <View style={{ flex: 1, paddingBottom: Dimens.footerButtonHeight }}>
-                <TopBanner />
-                <ScrollView scrollEnabled={true} contentContainerStyle={Styles.scrollView} showsVerticalScrollIndicator={false}>
-                    <KeyboardAvoidingView behavior='position'>
-                        <SignupForm changeText={this.changeText} />
-                    </KeyboardAvoidingView>
-                </ScrollView>
+                <KeyboardAvoidingView behavior='position'>
+                    <TopBanner />
+                    <ScrollView scrollEnabled={true} contentContainerStyle={Styles.scrollView} showsVerticalScrollIndicator={false}>
+                        <SignupForm changeText={this.changeText} handleSignup={this.handleSignup} />
+                    </ScrollView>
+                </KeyboardAvoidingView>
                 <LoadingDialog visible={this.state.visible} />
                 {/* <RoundButton handleClick={this.handleSignupDmmy} /> */}
-                <FooterButton name="Sign Up" icon="check" cta={this.handleSignup} />
+                <FooterButton name="Sign Up" icon="check" cta={this.handleSignup} disabled={this.state.visible} />
             </View>
         );
     }
@@ -122,7 +122,8 @@ const Styles = StyleSheet.create({
     scrollView: {
         padding: Dimens.padding / 2,
         flexGrow: 2,
-        zIndex: -1
+        zIndex: -1,
+
     },
 })
 

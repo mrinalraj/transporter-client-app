@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, TextInput, ToastAndroid, Alert, } from 'react-native'
+import { View, StyleSheet, Text, TextInput, Alert, } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import TopBanner from '../components/TopBanner'
 import Colors from '../res/Colors'
@@ -22,23 +22,6 @@ class OtpScreen extends Component {
     }
 
     shiftFocus = (val, name) => {
-        // if (val.length < 1) {
-        //     this.setState(prevState => ({
-        //         otp: [...prevState.otp.pop()]
-        //     }), () => {
-
-        //         switch (name) {
-        //             case 'in1':
-        //                 break;
-        //             case 'in2': this.input1.focus()
-        //                 break;
-        //             case 'in3': this.input2.focus()
-        //                 break;
-        //             case 'in4': this.input3.focus()
-        //                 break;
-        //         }
-        //     })
-        // }
 
         this.setState(prevState => ({
             otp: [...prevState.otp, val]
@@ -87,23 +70,21 @@ class OtpScreen extends Component {
             headers
         }).then(async ({ data }) => {
             let { success, payload } = data
-            if (success) {
+            if (!!success) {
                 let { result } = payload
                 this.setState({ visible: false })
 
                 if (this.props.otpType === 'verify') {
                     Alert.alert(result.message)
-                    Actions.reset('HomeDrawer')
-                    // ToastAndroid.show('logged in 1', ToastAndroid.SHORT)
+                    Actions.reset('CheckLoginState')
                 }
                 else {
                     try {
                         await SecureStore.setItemAsync(ACCESS_TOKEN, result.accessToken)
-                        // ToastAndroid.show('logged in 2', ToastAndroid.SHORT)
-                        Actions.reset('HomeDrawer')
+                        Actions.reset('CheckLoginState')
                     }
                     catch (e) {
-                        ToastAndroid.show(JSON.stringify(e), ToastAndroid.SHORT)
+                        // replace Toast
                     }
                 }
             }
@@ -124,11 +105,11 @@ class OtpScreen extends Component {
             .then(({ data }) => {
                 if (data.success) {
                     this.setState({ visible: false })
-                    ToastAndroid.show(`OTP sent to ${this.state.contactNo}`, ToastAndroid.LONG)
+                    // handle toast
                 }
                 else {
                     this.setState({ visible: false })
-                    ToastAndroid.show(`Error sending OTP please try againr`, ToastAndroid.LONG)
+                    //handle toast
                 }
             })
     }

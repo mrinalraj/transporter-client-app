@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TextInput, ScrollView, Alert, ToastAndroid, KeyboardAvoidingView } from 'react-native'
+import { View, Text, StyleSheet, TextInput, ScrollView, Alert, KeyboardAvoidingView } from 'react-native'
 import Dimens from '../res/Dimens'
 import Colors from '../res/Colors'
 import CustomStyle from '../res/CustomStyles'
@@ -25,7 +25,7 @@ class Login extends Component {
             Actions.replace('HomeDrawer')
         }
         catch (e) {
-            ToastAndroid.show(JSON.stringify(e), ToastAndroid.SHORT)
+            alert(JSON.stringify(e))
         }
     }
 
@@ -77,7 +77,7 @@ class Login extends Component {
             try {
                 await SecureStore.deleteItemAsync(ACCESS_TOKEN)
                 await SecureStore.setItemAsync(ACCESS_TOKEN, accessToken)
-                Actions.replace('HomeDrawer')
+                Actions.replace('CheckLoginState')
             }
             catch (error) {
                 Alert.alert("Error Occured", JSON.stringify(error))
@@ -102,13 +102,13 @@ class Login extends Component {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <TopBanner />
-                <ScrollView scrollEnabled={true} contentContainerStyle={{
-                    padding: Dimens.padding / 2,
-                    paddingBottom: Dimens.footerButtonHeight,
-                    flexGrow: 2,
-                }} showsVerticalScrollIndicator={false}>
-                    <KeyboardAvoidingView behavior='position'>
+                <KeyboardAvoidingView behavior='position'>
+                    <TopBanner />
+                    <ScrollView scrollEnabled={true} contentContainerStyle={{
+                        padding: Dimens.padding / 2,
+                        paddingBottom: Dimens.footerButtonHeight,
+                        flexGrow: 2,
+                    }} showsVerticalScrollIndicator={false}>
                         <Text style={CustomStyle.headText}>Welcome back, lets get you signed in.</Text>
                         <TextInput
                             style={CustomStyle.inputStyle}
@@ -130,11 +130,11 @@ class Login extends Component {
                         }</Text>
                         <Text style={{ ...Styles.forgotPassword }} onPress={() => Actions.push('ForgotPassword')}>Forgot Password ?</Text>
                         <Text style={{ padding: Dimens.wp('1.5'), textAlign: "center" }} onPress={() => Actions.SignUp()}>New here, Sign up?</Text>
-                    </KeyboardAvoidingView>
-                </ScrollView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
                 <LoadingDialog visible={this.state.visible} />
                 {/* <RoundButton handleClick={this.handleClick} /> */}
-                <FooterButton name='Login' icon='check' cta={this.handleClick} />
+                <FooterButton name='Login' icon='check' cta={this.handleClick} disabled={this.state.visible}/>
             </View >
         );
     }

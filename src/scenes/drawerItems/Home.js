@@ -78,7 +78,6 @@ class Home extends Component {
         filterShown: false,
         list: [],
         loading: false,
-        loadingModal: false,
         confirmOptionShown: false
     }
 
@@ -226,7 +225,6 @@ class Home extends Component {
                 <FilterModal visible={this.state.filterShown} hideFilter={() => { this.setState({ filterShown: false }) }} onComplete={() => { }} />
                 <FooterButton icon='add' name='Create Ride Request' cta={() => Actions.CreateRideRequest()} />
                 <VolumeAndWeightInput setState={this.setState} confirmOptionShown={this.state.confirmOptionShown} _createRideRequest={this._createRideRequest} cancelModal={() => this.setState({ confirmOptionShown: false })} />
-                <LoadingDialog visible={this.state.loadingModal} />
             </View>
         );
     }

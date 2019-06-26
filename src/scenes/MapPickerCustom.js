@@ -18,8 +18,9 @@ class MapPickerCustom extends React.Component {
     }
 
     _getLocationAsync = async () => {
-        this.setState({ visible: true })
-        let { status } = await Permissions.askAsync(Permissions.LOCATION)
+        this.setState({ loading: true })
+        const { status } = await Permissions.askAsync(Permissions.LOCATION)
+
         if (status !== 'granted') {
             alert('we need permission')
         }
@@ -28,7 +29,7 @@ class MapPickerCustom extends React.Component {
         this.setState({
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
-            visible: false
+            loading: false
         })
     }
 
@@ -39,9 +40,14 @@ class MapPickerCustom extends React.Component {
                 if (!data.success)
                     return alert('error finding address')
                 const addressComp = data.payload.result.results[0]
-                    , address = addressComp["formatted_address"]
+                    // , place = addressComp.address_components.filter(e => e.types.includes('administrative_area_level_2'))[0]
+                    // , subPlace = addressComp.address_components.filter(e => e.types.includes('locality'))[0]
+                    // , address = `${place} / ${subPlace}`
+                    , address = addressComp["formatted_address"].split(', ')
+                    , city = address.slice(-3, -2)
+                    , locality = address.slice(-5, -4)
                 this.setState({ loading: false })
-                this.props.onLocationSelect(which, latitude, longitude, address)
+                this.props.onLocationSelect(which, latitude, longitude, `${city}/${locality}`)
             })
             .catch(err => alert(err))
     }
@@ -67,7 +73,7 @@ class MapPickerCustom extends React.Component {
                 {
                     this._renderMap()
                 }
-                <LoadingDialog visible={this.state.visible} />
+                <LoadingDialog visible={this.state.loading} />
             </View>
         )
     }

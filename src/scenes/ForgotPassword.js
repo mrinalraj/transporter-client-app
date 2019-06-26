@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, ScrollView, Text, TextInput, ToastAndroid } from 'react-native'
+import { View, StyleSheet, ScrollView, Text, TextInput } from 'react-native'
 import LoadingDialog from '../components/LoadingDialog'
 import TopBanner from '../components/TopBanner'
 import CustomStyle from '../res/CustomStyles'
@@ -25,18 +25,15 @@ class ForgotPassword extends Component {
         this.setState({ visible: true })
         Axios.post(`${BASE_API}/sendOtp`, {
             contactNo: this.state.contactNo
-        }).then(response => {
+        }).then(({ data }) => {
             this.setState({ visible: false })
-            if (response.data.success) {
-                ToastAndroid.show(response.data.payload.result.message, ToastAndroid.SHORT)
-                Actions.replace('OtpScreen', { submitAction: this.otpSubmitAction, otpType: 'forgot', contactNo: this.state.contactNo })
-            }
-            else {
-                // ToastAndroid.show()
-            }
+            if (!data.success)
+                return alert(data.payload.error.message)
+            Actions.replace('OtpScreen', { submitAction: this.otpSubmitAction, otpType: 'forgot', contactNo: this.state.contactNo })
         })
             .catch(err => {
-                console.log(err)
+                this.setState({ visible: false })
+                alert(err)
             })
     }
 

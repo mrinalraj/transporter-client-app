@@ -24,7 +24,7 @@ class MyRequests extends Component {
                     this.setState({ loading: false })
                     if (!data.success)
                         return alert(dara.payload.error.message)
-                    const list = data.payload.result.data
+                    const list = data.payload.result.data.map(e => e.rideData)
                     this.setState({ list })
                 })
                 .catch(err => alert(err))
@@ -49,9 +49,13 @@ class MyRequests extends Component {
                 </View> */}
                 <ScrollView style={Styles.rootView}>
                     {
-                        this.state.list.sort((a, b) => a - b)
-                            // .filter()
-                            .map((d, i) => <MyRequestsList {...d} key={i} />)
+                        this.state.list.map((d, i) => {
+                            return <MyRequestsList {...d} key={i} />
+                        })
+                        // .sort((a, b) => a. - b)
+
+                        // .filter()
+
                     }
                 </ScrollView>
                 <LoadingDialog visible={this.state.loading} />
