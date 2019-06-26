@@ -1,9 +1,11 @@
 node_modules/**/*
-.expo/*
 npm-debug.*
+.expo*
+/android*
 *.jks*
 *.jks
 *.orig.*
 *.p12
 *.key
 *.mobileprovision
+.DS_Store
