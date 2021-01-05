@@ -9,7 +9,7 @@
   "dependencies": {
     "@ishawnwang/withunmounted": "^1.0.1",
     "@mapbox/polyline": "^1.1.0",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "expo": "^32.0.0",
     "moment": "^2.24.0",
     "password-validator": "^4.1.1",
